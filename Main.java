@@ -1,38 +1,106 @@
-import java.util.Random;
-import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args){
-        ArrayList<Card> deck = initialiseDeck();
-        int shuffles = 5;
-        for (int i = 0; i < shuffles; i++) {
-            shuffleArray(deck);
+        Deck deck = new Deck();
+        try {
+            playAHand(deck);
+
+        } catch (InterruptedException e){
+
         }
-        printDeck(deck);
+
     }
-    public static void printDeck(ArrayList<Card> deck){
-        for (int i = 0; i < 52; i++) {
-            System.out.println(deck.get(i).printCard());
+
+    public static String input(String prompt){
+        Scanner s = new Scanner(System.in);
+        System.out.print(prompt);
+        return s.nextLine();
+    }
+
+    public static void playAHand(Deck deck) throws InterruptedException {
+        // burn a card.
+        deck.burn();
+        Hand player = new Hand();
+        Hand dealer = new Hand();
+        player.AddCard(deck.draw());
+        dealer.AddCard(deck.draw());
+        player.AddCard(deck.draw());
+        System.out.println("Player:");
+        player.printHand();
+        System.out.println("Dealer:");
+        dealer.printHand();
+        String inp = input("Hit? [0] No [1] Yes\n");
+        while ((Objects.equals(inp, "1") || Objects.equals(inp, ""))){
+            player.AddCard(deck.draw());
+            System.out.println("Player:");
+            player.printHand();
+            System.out.println("Dealer:");
+            dealer.printHand();
+            if (player.isBusted()){
+                System.out.println("You busted!");
+                dealerWon(player, dealer);
+                break;
+            }
+            if (player.sum() == 21){
+                if (dealer.sum() == 21){
+                    tie(player, dealer);
+                    break;
+                }
+                playerWon(player, dealer);
+                break;
+            }
+            inp = input("Hit? [0] No [1] Yes\n");
         }
-    }
-    public static ArrayList<Card> initialiseDeck(){
-        ArrayList<Card> deck = new ArrayList<>();
-        for (int suit = 1; suit < 5; suit++) {
-            for (int value = 1; value < 14; value++) {
-                deck.add(new Card(value));
+        dealer.AddCard(deck.draw());
+        while (dealer.sum() < 17 && !dealer.isBusted()){
+            dealer.AddCard(deck.draw());
+            System.out.println("Dealer:");
+            dealer.printHand();
+            TimeUnit.SECONDS.sleep(1);
+            if (dealer.isBusted()){
+                playerWon(player, dealer);
             }
         }
-        return deck;
-    }
-    static void shuffleArray(ArrayList<Card> ar)
-    {
-        Random rnd = new Random();
-        for (int i = ar.size() - 1; i > 0; i--)
-        {
-            int index = rnd.nextInt(i + 1);
-            // Simple swap
-            Card a = ar.get(index);
-            ar.set(index, ar.get(i));
-            ar.set(i, a);
+        if (dealer.sum() > player.sum()){
+            dealerWon(player, dealer);
         }
+        else if (dealer.sum() < player.sum()){
+            playerWon(player, dealer);
+        }
+        else {
+            tie(player, dealer);
+        }
+
     }
+    public static void playerWon(Hand player, Hand dealer) {
+        System.out.println("Player:");
+        player.printHand();
+        System.out.println("Dealer:");
+        dealer.printHand();
+        System.out.println("PLAYER WON");
+    }
+    public static void dealerWon(Hand player, Hand dealer){
+        System.out.println("Player:");
+        player.printHand();
+        System.out.println("Dealer:");
+        dealer.printHand();
+        System.out.println("DEALER WON");
+
+    }public static void tie(Hand player, Hand dealer){
+        System.out.println("Player:");
+        player.printHand();
+        System.out.println("Dealer:");
+        dealer.printHand();
+        System.out.println("TIE");
+
+    }
+
+
+
+
+
+
 }
