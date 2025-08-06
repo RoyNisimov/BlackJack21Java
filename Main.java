@@ -42,15 +42,15 @@ public class Main {
             if (player.isBusted()){
                 System.out.println("You busted!");
                 dealerWon(player, dealer);
-                break;
+                return;
             }
             if (player.sum() == 21){
                 if (dealer.sum() == 21){
                     tie(player, dealer);
-                    break;
+                    return;
                 }
                 playerWon(player, dealer);
-                break;
+                return;
             }
             inp = input("Hit? [0] No [1] Yes\n");
         }
@@ -62,16 +62,21 @@ public class Main {
             TimeUnit.SECONDS.sleep(1);
             if (dealer.isBusted()){
                 playerWon(player, dealer);
+                return;
             }
         }
+
         if (dealer.sum() > player.sum()){
             dealerWon(player, dealer);
+            return;
         }
         else if (dealer.sum() < player.sum()){
             playerWon(player, dealer);
+            return;
         }
         else {
             tie(player, dealer);
+            return;
         }
 
     }
