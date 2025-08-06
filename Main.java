@@ -1,39 +1,38 @@
 import java.util.Random;
+import java.util.ArrayList;
 public class Main {
     public static void main(String[] args){
-        Card[] deck = initialiseDeck();
+        ArrayList<Card> deck = initialiseDeck();
         int shuffles = 5;
         for (int i = 0; i < shuffles; i++) {
             shuffleArray(deck);
         }
         printDeck(deck);
     }
-    public static void printDeck(Card[] deck){
+    public static void printDeck(ArrayList<Card> deck){
         for (int i = 0; i < 52; i++) {
-            System.out.println(deck[i].printCard());
+            System.out.println(deck.get(i).printCard());
         }
     }
-    public static Card[] initialiseDeck(){
-        Card[] deck = new Card[52];
-        int index = 0;
+    public static ArrayList<Card> initialiseDeck(){
+        ArrayList<Card> deck = new ArrayList<>();
         for (int suit = 1; suit < 5; suit++) {
             for (int value = 1; value < 14; value++) {
-                deck[index] = new Card(value, suit);
-                index++;
+                deck.add(new Card(value));
             }
         }
         return deck;
     }
-    static void shuffleArray(Object[] ar)
+    static void shuffleArray(ArrayList<Card> ar)
     {
         Random rnd = new Random();
-        for (int i = ar.length - 1; i > 0; i--)
+        for (int i = ar.size() - 1; i > 0; i--)
         {
             int index = rnd.nextInt(i + 1);
             // Simple swap
-            Object a = ar[index];
-            ar[index] = ar[i];
-            ar[i] = a;
+            Card a = ar.get(index);
+            ar.set(index, ar.get(i));
+            ar.set(i, a);
         }
     }
 }
