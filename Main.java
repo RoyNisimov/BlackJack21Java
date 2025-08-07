@@ -5,12 +5,15 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args){
         Deck deck = new Deck();
-        try {
-            playAHand(deck);
+        while (true){
+            try {
+                playAHand(deck);
+                // System.out.println(deck.getCount());
+            } catch (InterruptedException e){
 
-        } catch (InterruptedException e){
-
+            }
         }
+
 
     }
 
@@ -28,16 +31,19 @@ public class Main {
         player.AddCard(deck.draw());
         dealer.AddCard(deck.draw());
         player.AddCard(deck.draw());
-        System.out.println("Player:");
+        Card dealerSecretCard = deck.draw();
+        System.out.println(Colors.ANSI_BLUE + "Player:" + Colors.ANSI_RESET);
         player.printHand();
-        System.out.println("Dealer:");
+        System.out.println(Colors.ANSI_PURPLE + "Dealer: " + Colors.ANSI_RESET);
         dealer.printHand();
-        String inp = input("Hit? [0] No [1] Yes\n");
+        // Player plays
+        String inp = input(Colors.ANSI_RED + "[0] Stay "+ Colors.ANSI_GREEN + "[1] Hit\n" + Colors.ANSI_RESET);
         while ((Objects.equals(inp, "1") || Objects.equals(inp, ""))){
             player.AddCard(deck.draw());
-            System.out.println("Player:");
+            System.out.println(Colors.ANSI_BLUE + "Player:" + Colors.ANSI_RESET);
+
             player.printHand();
-            System.out.println("Dealer:");
+            System.out.println(Colors.ANSI_PURPLE + "Dealer: " + Colors.ANSI_RESET);
             dealer.printHand();
             if (player.isBusted()){
                 System.out.println("You busted!");
@@ -52,12 +58,14 @@ public class Main {
                 playerWon(player, dealer);
                 return;
             }
-            inp = input("Hit? [0] No [1] Yes\n");
+            inp = input(Colors.ANSI_RED + "[0] Stay "+ Colors.ANSI_GREEN + "[1] Hit\n" + Colors.ANSI_RESET);
         }
-        dealer.AddCard(deck.draw());
+
+        // dealer plays
+        dealer.AddCard(dealerSecretCard);
         while (dealer.sum() < 17 && !dealer.isBusted()){
             dealer.AddCard(deck.draw());
-            System.out.println("Dealer:");
+            System.out.println(Colors.ANSI_PURPLE + "Dealer: " + Colors.ANSI_RESET);
             dealer.printHand();
             TimeUnit.SECONDS.sleep(1);
             if (dealer.isBusted()){
@@ -68,44 +76,39 @@ public class Main {
 
         if (dealer.sum() > player.sum()){
             dealerWon(player, dealer);
-            return;
         }
         else if (dealer.sum() < player.sum()){
             playerWon(player, dealer);
-            return;
         }
         else {
             tie(player, dealer);
-            return;
         }
 
+        // mucks cards
+        dealer.muckHand(deck);
+        player.muckHand(deck);
     }
     public static void playerWon(Hand player, Hand dealer) {
-        System.out.println("Player:");
+        System.out.println(Colors.ANSI_BLUE + "Player:" + Colors.ANSI_RESET);
         player.printHand();
-        System.out.println("Dealer:");
+        System.out.println(Colors.ANSI_PURPLE + "Dealer: " + Colors.ANSI_RESET);
         dealer.printHand();
-        System.out.println("PLAYER WON");
+        System.out.println(Colors.ANSI_GREEN + "PLAYER WON" + Colors.ANSI_RESET);
     }
     public static void dealerWon(Hand player, Hand dealer){
-        System.out.println("Player:");
+        System.out.println(Colors.ANSI_BLUE + "Player:" + Colors.ANSI_RESET);
         player.printHand();
-        System.out.println("Dealer:");
+        System.out.println(Colors.ANSI_PURPLE + "Dealer: " + Colors.ANSI_RESET);
         dealer.printHand();
-        System.out.println("DEALER WON");
+        System.out.println(Colors.ANSI_RED + "DEALER WON" + Colors.ANSI_RESET);
+
 
     }public static void tie(Hand player, Hand dealer){
-        System.out.println("Player:");
+        System.out.println(Colors.ANSI_BLUE + "Player:" + Colors.ANSI_RESET);
         player.printHand();
-        System.out.println("Dealer:");
+        System.out.println(Colors.ANSI_PURPLE + "Dealer: " + Colors.ANSI_RESET);
         dealer.printHand();
         System.out.println("TIE");
 
     }
-
-
-
-
-
-
 }

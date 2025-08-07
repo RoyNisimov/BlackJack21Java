@@ -54,11 +54,34 @@ public class Deck {
         cards_out.add(top);
         return top;
     }
+
     public void burn(){
         muckCard(draw());
     }
+
+    /**
+     * Adds the card to the muck
+     * @param c is the card we muck
+     */
     public void muckCard(Card c){
         this.muck.add(c);
     }
 
+    /**
+     * Gets the current running count
+     * @return the count
+     */
+    public int getCount(){
+        int count = 0;
+        for (Card c: this.muck){
+            int cValue = c.getValue();
+            if ((2 <= cValue) && (cValue <= 6)){
+                count++;
+
+            }else if(cValue == 10 || cValue == 1){
+                count--;
+            }
+        }
+        return count;
+    }
 }
