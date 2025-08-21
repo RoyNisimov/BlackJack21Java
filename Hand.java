@@ -3,11 +3,9 @@ public class Hand {
     private ArrayList<Card> cards = new ArrayList<>();
     private ArrayList<String> normalOrderCards = new ArrayList<>();
     private int Aces = 0;
-    public Hand(ArrayList<Card> cards){
-        for (Card card: cards){
-            if(card.getValue() == 1){Aces++; continue;}
-            this.cards.add(card);
-        }
+    public Hand(ArrayList<Card> cards, int aces){
+        this.cards.addAll(cards);
+        this.Aces = aces;
     }
     public Hand(){
         this.cards = new ArrayList<>();
@@ -35,6 +33,10 @@ public class Hand {
         }
         System.out.println(s + " => " + Integer.toString(sum()));
     }
+    public Hand copy(){
+        return new Hand(this.cards, this.Aces);
+    }
+
     public int sum(){
         int s = 0;
         for (Card card : cards) {

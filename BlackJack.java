@@ -10,6 +10,7 @@ public class BlackJack {
     int current_bet = 0;
     public BlackJack(){
         int shoeAmount = Integer.parseInt(input("Decks in shoe?: "));
+        boolean showCount = Boolean.valueOf(input("Show count?: "));
         Random random = new Random();
         Deck deck = new Deck(shoeAmount, random.nextInt(5*shoeAmount, 10*shoeAmount+1));
 
@@ -19,7 +20,7 @@ public class BlackJack {
                 System.out.println(Colors.ANSI_GREEN + "PROFIT: " + profit + Colors.ANSI_RESET);
                 System.out.println(Colors.ANSI_RED + "LOSE: " + lost + Colors.ANSI_RESET);
                 System.out.println(Colors.ANSI_YELLOW + "TOTAL: " + (profit - lost) + Colors.ANSI_RESET);
-                playAHand(deck);
+                playAHand(deck, showCount);
                 // System.out.println(deck.getCount());
             } catch (InterruptedException e){
 
@@ -38,9 +39,12 @@ public class BlackJack {
         return s.nextLine();
     }
 
-    public void playAHand(Deck deck) throws InterruptedException {
-        // burn a card.
+    public void playAHand(Deck deck, boolean printCount) throws InterruptedException {
+        if (printCount){
+            System.out.println("Count:" + deck.getCount());
+        }
         this.current_bet =  Integer.parseInt(input("Bet: "));
+        // burn a card.
         deck.burn();
         Hand player = new Hand();
         Hand dealer = new Hand();
@@ -52,9 +56,26 @@ public class BlackJack {
         player.printHand();
         System.out.println(Colors.ANSI_PURPLE + "Dealer: " + Colors.ANSI_RESET);
         dealer.printHand();
+        Hand fD = dealer.copy();
+        fD.AddCard(dealerSecretCard);
+        if(fD.sum() == 21){
+            if (player.sum() == 21){
+                tie(player, fD);
+                return;
+            }
+            dealerWon(player, fD);
+            return;
+        }
+        if (player.sum() == 21){
+            playerWon(player, fD);
+            return;
+        }
         // Player plays
+        if (printCount){
+            System.out.println("Count:" + deck.getCount());
+        }
         String inp = input(Colors.ANSI_RED + "[0] Stay "+ Colors.ANSI_GREEN + "[1] Hit\n" + Colors.ANSI_RESET);
-        while ((Objects.equals(inp, "1") || Objects.equals(inp, ""))){
+        while (Objects.equals(inp, "1") || Objects.equals(inp, "")){
             player.AddCard(deck.draw());
             System.out.println(Colors.ANSI_BLUE + "Player:" + Colors.ANSI_RESET);
 
@@ -67,12 +88,15 @@ public class BlackJack {
                 return;
             }
             if (player.sum() == 21){
-                if (dealer.sum() == 21){
-                    tie(player, dealer);
+                if (fD.sum() == 21){
+                    tie(player, fD);
                     return;
                 }
                 playerWon(player, dealer);
                 return;
+            }
+            if (printCount){
+                System.out.println("Count:" + deck.getCount());
             }
             inp = input(Colors.ANSI_RED + "[0] Stay "+ Colors.ANSI_GREEN + "[1] Hit\n" + Colors.ANSI_RESET);
         }

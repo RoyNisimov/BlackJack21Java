@@ -31,6 +31,9 @@ public class Deck {
             shuffleDeck(deck);
         }
     }
+    public int deckSize(){
+        return deck.size();
+    }
     public void printDeck(){
         for (int i = 0; i < this.deck.size(); i++) {
             System.out.println(this.deck.get(i).printCard());
@@ -64,6 +67,10 @@ public class Deck {
         }
     }
     public Card draw(){
+        if (deckSize() <= 0){
+            System.out.println("Finished the deck");
+            System.exit(0);
+        }
         Card top = deck.getFirst();
         deck.removeFirst();
         cards_out.add(top);
