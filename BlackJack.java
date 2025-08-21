@@ -1,19 +1,34 @@
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.Scanner;
+import java.util.Random;
 
-public class Main {
-    public static void main(String[] args){
-        Deck deck = new Deck();
-        while (true){
+public class BlackJack {
+
+    int profit = 0;
+    int lost = 0;
+    int current_bet = 0;
+    public BlackJack(){
+        int shoeAmount = Integer.parseInt(input("Decks in shoe?: "));
+        Random random = new Random();
+        Deck deck = new Deck(shoeAmount, random.nextInt(5*shoeAmount, 10*shoeAmount+1));
+
+        while (true)
+        {
             try {
+                System.out.println(Colors.ANSI_GREEN + "PROFIT: " + profit + Colors.ANSI_RESET);
+                System.out.println(Colors.ANSI_RED + "LOSE: " + lost + Colors.ANSI_RESET);
+                System.out.println(Colors.ANSI_YELLOW + "TOTAL: " + (profit - lost) + Colors.ANSI_RESET);
                 playAHand(deck);
                 // System.out.println(deck.getCount());
             } catch (InterruptedException e){
 
             }
         }
+    }
 
+    public static void main(String[] args){
+        BlackJack bj = new BlackJack();
 
     }
 
@@ -23,8 +38,9 @@ public class Main {
         return s.nextLine();
     }
 
-    public static void playAHand(Deck deck) throws InterruptedException {
+    public void playAHand(Deck deck) throws InterruptedException {
         // burn a card.
+        this.current_bet =  Integer.parseInt(input("Bet: "));
         deck.burn();
         Hand player = new Hand();
         Hand dealer = new Hand();
@@ -88,27 +104,28 @@ public class Main {
         dealer.muckHand(deck);
         player.muckHand(deck);
     }
-    public static void playerWon(Hand player, Hand dealer) {
+    public void playerWon(Hand player, Hand dealer) {
         System.out.println(Colors.ANSI_BLUE + "Player:" + Colors.ANSI_RESET);
         player.printHand();
         System.out.println(Colors.ANSI_PURPLE + "Dealer: " + Colors.ANSI_RESET);
         dealer.printHand();
         System.out.println(Colors.ANSI_GREEN + "PLAYER WON" + Colors.ANSI_RESET);
+        this.profit += this.current_bet;
     }
-    public static void dealerWon(Hand player, Hand dealer){
+    public void dealerWon(Hand player, Hand dealer){
         System.out.println(Colors.ANSI_BLUE + "Player:" + Colors.ANSI_RESET);
         player.printHand();
         System.out.println(Colors.ANSI_PURPLE + "Dealer: " + Colors.ANSI_RESET);
         dealer.printHand();
         System.out.println(Colors.ANSI_RED + "DEALER WON" + Colors.ANSI_RESET);
+        this.lost += this.current_bet;
 
-
-    }public static void tie(Hand player, Hand dealer){
+    }
+    public static void tie(Hand player, Hand dealer){
         System.out.println(Colors.ANSI_BLUE + "Player:" + Colors.ANSI_RESET);
         player.printHand();
         System.out.println(Colors.ANSI_PURPLE + "Dealer: " + Colors.ANSI_RESET);
         dealer.printHand();
         System.out.println("TIE");
-
     }
 }

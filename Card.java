@@ -15,7 +15,7 @@ public class Card {
     }
 
     public String printCard(){
-        return "Face Value" + getFaceValue() + "Value: " + Integer.toString(getValue());
+        return "Face Value: " + getFaceValue() + " Value: " + Integer.toString(getValue());
     }
 
     public String getFaceValue() {

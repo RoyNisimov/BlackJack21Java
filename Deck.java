@@ -12,6 +12,15 @@ public class Deck {
             shuffleDeck(deck);
         }
     }
+    public Deck(int decksInShoe, int shuffles){
+        this.muck = new ArrayList<>();
+        this.cards_out = new ArrayList<>();
+        this.deck = initialiseDeck(decksInShoe);
+        for (int i = 0; i < shuffles; i++) {
+            shuffleDeck(deck);
+        }
+    }
+
     public Deck(){
         this.muck = new ArrayList<>();
         this.cards_out = new ArrayList<>();
@@ -23,15 +32,21 @@ public class Deck {
         }
     }
     public void printDeck(){
-        for (int i = 0; i < 52; i++) {
+        for (int i = 0; i < this.deck.size(); i++) {
             System.out.println(this.deck.get(i).printCard());
         }
     }
     public ArrayList<Card> initialiseDeck(){
+        return initialiseDeck(1);
+    }
+    public ArrayList<Card> initialiseDeck(int shoeAmount){
+        assert shoeAmount >= 1;
         ArrayList<Card> deck = new ArrayList<>();
-        for (int suit = 1; suit < 5; suit++) {
-            for (int value = 1; value < 14; value++) {
-                deck.add(new Card(value));
+        for (int i = 0; i < shoeAmount; i++) {
+            for (int suit = 1; suit < 5; suit++) {
+                for (int value = 1; value < 14; value++) {
+                    deck.add(new Card(value));
+                }
             }
         }
         return deck;
